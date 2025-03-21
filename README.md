@@ -1,2 +1,2 @@
 # Professor_Appointment
-A professor Appointment model
+A professor Appointment Api Automation Testing Project
