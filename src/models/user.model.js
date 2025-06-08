@@ -13,7 +13,7 @@ const userSchema = new Schema(
             unique: true,
             lowercase: true,
             trim: true,
-            index: true, // Enables searching
+            index: true,
         },
         email: {
             type: String,
@@ -29,7 +29,7 @@ const userSchema = new Schema(
             index: true,
         },
         avatar: {
-            type: String, // Cloudinary URL
+            type: String,
             required:false
         },
         coverImage: {
@@ -53,19 +53,17 @@ const userSchema = new Schema(
     }
 );
 
-// Hash password before saving
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
     this.password = await bcrypt.hash(this.password, 10);
     next();
 });
 
-// Method to check if the password is correct
+
 userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
 
-// Generate Access Token
 userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
         {
@@ -82,7 +80,6 @@ userSchema.methods.generateAccessToken = function () {
     );
 };
 
-// Generate Refresh Token
 userSchema.methods.generateRefreshToken = function () {
     return jwt.sign(
         {

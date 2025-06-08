@@ -3,7 +3,7 @@ import { DB_NAME } from "../constants.js";
 import dotenv from "dotenv";
 const connectDB = async () => {
     try {
-        const dbURI = `mongodb+srv://ayush121:pumpum223@cluster0.unr9i.mongodb.net/ProfessorAppointment?retryWrites=true&w=majority&appName=Cluster0
+        const dbURI = `mongodb+srv://ayushTest:ayush2609@cluster0.unr9i.mongodb.net/
 `;
 
         console.log(`Connecting to MongoDB with URI: ${dbURI}`);

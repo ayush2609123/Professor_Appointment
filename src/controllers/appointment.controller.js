@@ -4,13 +4,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Availability } from "../models/availability.model.js";
 import { Appointment } from "../models/appointment.model.js";
 
-/**
- * Student books an appointment with a professor.
- * Endpoint: POST /api/appointments
- * Expected body: { professorId: "profId", date: "2025-03-25", timeSlot: "10:00 AM - 11:00 AM" }
- */
+
 export const bookAppointment = asyncHandler(async (req, res) => {
-  // Only students can book appointments.
   if (req.user.role !== "student") {
     throw new ApiError(403, "Only students can book appointments");
   }
@@ -20,7 +15,6 @@ export const bookAppointment = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Professor ID, date and timeSlot are required");
   }
   
-  // Check if the availability exists and is not already booked.
   const availability = await Availability.findOne({
     professorId,
     date,
@@ -31,8 +25,6 @@ export const bookAppointment = asyncHandler(async (req, res) => {
   if (!availability) {
     throw new ApiError(400, "Time slot is not available");
   }
-  
-  // Create a new appointment.
   const appointment = await Appointment.create({
     professorId,
     studentId: req.user._id,
@@ -41,8 +33,6 @@ export const bookAppointment = asyncHandler(async (req, res) => {
     status: "booked",
     rescheduledFromId: null,
   });
-  
-  // Mark the slot as booked.
   availability.isBooked = true;
   await availability.save();
   
@@ -51,10 +41,6 @@ export const bookAppointment = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, appointment, "Appointment booked successfully"));
 });
 
-/**
- * Professor cancels an appointment.
- * Endpoint: PATCH /api/appointments/:appointmentId/cancel
- */
 export const cancelAppointment = asyncHandler(async (req, res) => {
   // Only professors can cancel appointments.
   if (req.user.role !== "professor") {
@@ -95,17 +81,13 @@ export const cancelAppointment = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, appointment, "Appointment canceled successfully"));
 });
 
-/**
- * Student checks their pending appointments.
- * Endpoint: GET /api/appointments/mine
- */
 export const getStudentAppointments = asyncHandler(async (req, res) => {
-  // Only students can check their appointments.
+
   if (req.user.role !== "student") {
     throw new ApiError(403, "Only students can check appointments");
   }
   
-  // Fetch appointments that are not canceled.
+
   const appointments = await Appointment.find({
     studentId: req.user._id,
     status: { $ne: "canceled" },

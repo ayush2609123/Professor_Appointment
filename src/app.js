@@ -13,7 +13,7 @@ import reviewRoutes from "./routes/review.routes.js";
 
 const app = express();
 
-// Enable CORS with credentials support.
+
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -26,14 +26,14 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-// Mount API routes under /api/v1/
+
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/appointments", appointmentRoutes);
 app.use("/api/v1/availability", availabilityRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
 
-// Global error handler middleware.
+
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(err.statusCode || 500).json({
